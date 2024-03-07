@@ -8,6 +8,14 @@ export const StoreSchema = new mongoose.Schema(
       required: true,
       auto: true,
     },
+    country: {
+      type: String,
+      required: true,
+    },
+    storeCode: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
