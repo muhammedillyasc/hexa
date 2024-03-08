@@ -7,6 +7,7 @@ import { JWT_CONFIG } from 'src/config/jwt.config';
 import { AuthSchema } from './schemas/auth.schema';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
+import { AuthGuard } from './guard/auth.guard';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { UsersService } from './users.service';
   ],
   exports: [],
   controllers: [],
-  providers: [UsersResolver, UsersService],
+  providers: [UsersResolver, UsersService, AuthGuard],
 })
 export class UsersModule {}

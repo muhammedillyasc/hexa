@@ -17,6 +17,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserInput } from './dto/inputs/login-user.input';
 import { USER_ACCOUNT_STATUS } from './enum/accountStatus.enum';
+import { UpdateUserInput } from './dto/inputs/update-user.input';
 
 @Injectable() // we can use this othjer places
 export class UsersService {
@@ -124,6 +125,29 @@ export class UsersService {
     if (!isPasswordMatch) {
       throw new UnauthorizedException('Email and Password are not matching...');
     }
+    return userExist;
+  }
+
+  /**
+   *
+   * @returns
+   */
+  async updateAdmin(input: UpdateUserInput): Promise<UserResponse> {
+    const { email, ...rest } = input || {};
+    const userExist = await this.authModel
+      .findOneAndUpdate(
+        { email: email },
+        {
+          $set: {
+            ...rest,
+          },
+        },
+      )
+      .lean();
+    if (!userExist?.email) {
+      throw new BadRequestException('Requested email not exist...');
+    }
+
     return userExist;
   }
 
