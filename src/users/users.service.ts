@@ -169,6 +169,22 @@ export class UsersService {
     }
   }
 
+  /**
+   *
+   * @param password
+   * @returns
+   */
+  async getUserByEmail(email: string): Promise<UserResponse> {
+    const userExist = await this.authModel.findOne({ email });
+
+    if (!userExist?.email) {
+      throw new NotFoundException(
+        'We coudnt find any account in this email...',
+      );
+    }
+    return userExist;
+  }
+
   /////store
 
   async getStores(): Promise<Store[]> {
