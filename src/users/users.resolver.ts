@@ -6,7 +6,9 @@ import { CreateUserInput } from './dto/inputs/create-user.input';
 import {
   InternalServerErrorException,
   NotAcceptableException,
+  NotFoundException,
 } from '@nestjs/common';
+import { LoginUserInput } from './dto/inputs/login-user.input';
 
 //will return Pesrson
 @Resolver()
@@ -44,6 +46,37 @@ export class UsersResolver {
       };
     } catch (error) {
       throw new InternalServerErrorException('An unexpected error occurred.');
+      // const exceptionType = exceptionMap[error.constructor.name];
+      // if (exceptionType) {
+      //   throw new exceptionType(error.message);
+      // } else {
+      //   throw new InternalServerErrorException('An unexpected error occurred.');
+      // }
+    }
+  }
+
+  /**
+   * LOGIN ADMIN ACCOUNT WITH PASSWORD
+   * @param createAdminInput
+   * @param context
+   * @returns
+   */
+
+  @Mutation(() => UserWithTokenResponse)
+  async loginUser(@Args('input') loginAdminInput: LoginUserInput) {
+    try {
+      const admin = await this.usersService.loginUser(loginAdminInput);
+
+      if (!admin?.email) {
+        throw new NotFoundException('Requested user email not exist');
+      }
+      const token = await this.usersService.generateUserToken(admin);
+
+      return {
+        token,
+        admin,
+      };
+    } catch (error) {
       // const exceptionType = exceptionMap[error.constructor.name];
       // if (exceptionType) {
       //   throw new exceptionType(error.message);

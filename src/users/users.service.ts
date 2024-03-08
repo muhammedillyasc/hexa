@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Store, UserResponse } from './dto/users.dto';
 import { CreateStoreInput } from './dto/inputs/create-store.input';
@@ -13,6 +15,8 @@ import { CreateUserInput } from './dto/inputs/create-user.input';
 import { AuthSchemaName } from './schemas/auth.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserInput } from './dto/inputs/login-user.input';
+import { USER_ACCOUNT_STATUS } from './enum/accountStatus.enum';
 
 @Injectable() // we can use this othjer places
 export class UsersService {
@@ -52,6 +56,25 @@ export class UsersService {
     return hashedPassword;
   }
 
+  /**
+   * Check password is valid
+   * @param password
+   * @param hashedPassword
+   * @returns
+   */
+  async isValidPassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    try {
+      const result = await bcrypt.compare(password, hashedPassword);
+      return result;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  //auth
   async createUser(input: CreateUserInput): Promise<any> {
     const userExist = await this.authModel.findOne({ email: input.email });
 
@@ -79,6 +102,32 @@ export class UsersService {
 
     return newUser.toJSON();
   }
+
+  async loginUser(input: LoginUserInput): Promise<UserResponse> {
+    const userExist = await this.authModel.findOne({ email: input.email });
+
+    if (!userExist?.email) {
+      throw new NotFoundException(
+        'We coudnt find any account in this email...',
+      );
+    }
+
+    if (Number(userExist?.isActive) !== USER_ACCOUNT_STATUS.ACTIVE) {
+      throw new UnauthorizedException('User account is not activated yet...');
+    }
+
+    const isPasswordMatch = await this.isValidPassword(
+      input.password,
+      userExist.password,
+    );
+
+    if (!isPasswordMatch) {
+      throw new UnauthorizedException('Email and Password are not matching...');
+    }
+    return userExist;
+  }
+
+  /////store
 
   async getStores(): Promise<Store[]> {
     const stores = await this.storeModel.find({});
