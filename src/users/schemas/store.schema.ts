@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-
+export const StoreSchemaName = 'store';
 export const StoreSchema = new mongoose.Schema(
   {
     _id: {
