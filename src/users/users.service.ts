@@ -18,6 +18,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserInput } from './dto/inputs/login-user.input';
 import { USER_ACCOUNT_STATUS } from './enum/accountStatus.enum';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
+import { USER_ROLES } from './enum/role.enum';
 
 @Injectable() // we can use this othjer places
 export class UsersService {
@@ -132,7 +133,7 @@ export class UsersService {
    *
    * @returns
    */
-  async updateAdmin(input: UpdateUserInput): Promise<UserResponse> {
+  async updateUser(input: UpdateUserInput): Promise<UserResponse> {
     const { email, ...rest } = input || {};
     const userExist = await this.authModel
       .findOneAndUpdate(
@@ -149,6 +150,23 @@ export class UsersService {
     }
 
     return userExist;
+  }
+
+  /**
+   * delete user account
+   * @param email
+   */
+  async deleteUserAccount(email: string): Promise<boolean> {
+    try {
+      const result = await this.authModel.findByIdAndDelete({
+        email,
+        role: { $ne: USER_ROLES.SUPER_ADMIN },
+      });
+
+      return result?._id ? true : false;
+    } catch (e) {
+      return false;
+    }
   }
 
   /////store
@@ -175,8 +193,4 @@ export class UsersService {
     const newStore = await this.storeModel.create({ ...store });
     return newStore.toJSON();
   }
-
-  public updatStore() {}
-
-  public deleteStore() {}
 }

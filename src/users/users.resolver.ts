@@ -12,6 +12,7 @@ import { LoginUserInput } from './dto/inputs/login-user.input';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { USER_ROLES } from './enum/role.enum';
 import { AuthGuard } from './guard/auth.guard';
+import { DeleteUserAccount } from './dto/inputs/delete-user.input';
 
 //will return Pesrson
 @Resolver()
@@ -107,13 +108,40 @@ export class UsersResolver {
     try {
       // check user have the access
       await this.authGuard.checkUserAccess(context, [USER_ROLES.SUPER_ADMIN]);
-      const admin = await this.usersService.updateAdmin(updateAdminInput);
+      const admin = await this.usersService.updateUser(updateAdminInput);
       const token = await this.usersService.generateUserToken(admin);
 
       return {
         token,
         admin,
       };
+    } catch (error) {
+      // const exceptionType = exceptionMap[error.constructor.name];
+      // if (exceptionType) {
+      //   throw new exceptionType(error.message);
+      // } else {
+      //   throw new InternalServerErrorException('An unexpected error occurred.');
+      // }
+    }
+  }
+
+  /**
+   * DELETE USER ACCOUNT
+   * @param context
+   */
+  @Mutation(() => Boolean)
+  async deleteAdmin(
+    @Context() context: any,
+    @Args('input') userEmail: DeleteUserAccount,
+  ) {
+    const { email } = userEmail || {};
+    try {
+      if (!userEmail) {
+        throw new InternalServerErrorException(
+          'Please mention a valid input...',
+        );
+      }
+      return await this.usersService.deleteUserAccount(email);
     } catch (error) {
       // const exceptionType = exceptionMap[error.constructor.name];
       // if (exceptionType) {
