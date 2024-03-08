@@ -21,7 +21,7 @@ export class UsersService {
     private readonly storeModel: Model<Store>,
     @InjectModel(AuthSchemaName)
     private readonly authModel: Model<UserResponse>,
-    // private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   /**
@@ -37,8 +37,7 @@ export class UsersService {
       category: user?.category || null,
       isActive: user.isActive,
     };
-    return 'sdahs`dfcv';
-    //return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload);
   }
 
   /**
