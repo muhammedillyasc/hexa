@@ -1,12 +1,57 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Store } from './dto/users.dto';
+import { Store, UserWithTokenResponse } from './dto/users.dto';
 import { UsersService } from './users.service';
 import { CreateStoreInput } from './dto/inputs/create-store.input';
+import { CreateUserInput } from './dto/inputs/create-user.input';
+import {
+  InternalServerErrorException,
+  NotAcceptableException,
+} from '@nestjs/common';
 
 //will return Pesrson
 @Resolver()
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+
+  @Mutation(() => UserWithTokenResponse)
+  async createUser(@Args('input') createUserInput: CreateUserInput) {
+    try {
+      // if the password are not matched
+      if (createUserInput?.password !== createUserInput?.confirmPassword) {
+        throw new NotAcceptableException(
+          'Password and Confirm Password are not matching...',
+        );
+      }
+
+      const user = await this.usersService.createUser(createUserInput);
+      if (!user?._id) {
+        throw new InternalServerErrorException(
+          'Failed to create admin account...',
+        );
+      }
+
+      const token = await this.usersService.generateUserToken(user);
+
+      // // TRIGGER EMAIL - NEW USER
+      // this.usersService.sentAccountCreatedEmail({
+      //   ...admin,
+      //   password: createAdminInput?.password || '',
+      // });
+
+      return {
+        token,
+        user,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('An unexpected error occurred.');
+      // const exceptionType = exceptionMap[error.constructor.name];
+      // if (exceptionType) {
+      //   throw new exceptionType(error.message);
+      // } else {
+      //   throw new InternalServerErrorException('An unexpected error occurred.');
+      // }
+    }
+  }
 
   @Query(() => [Store])
   async getStores(): Promise<Store[]> {
