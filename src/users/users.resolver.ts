@@ -15,6 +15,8 @@ import { AuthGuard } from './guard/auth.guard';
 import { DeleteUserAccount } from './dto/inputs/delete-user.input';
 import { DeleteStoreInput } from './dto/inputs/delete-store.input';
 import { UpdateStoreInput } from './dto/inputs/update-store.input';
+import { ResetPasswordInput } from './dto/inputs/reset-password.input';
+import { ForgotPasswordInput } from './dto/inputs/forgot-password.input';
 
 //will return Pesrson
 @Resolver()
@@ -144,6 +146,48 @@ export class UsersResolver {
         );
       }
       return await this.usersService.deleteUserAccount(email);
+    } catch (error) {
+      // const exceptionType = exceptionMap[error.constructor.name];
+      // if (exceptionType) {
+      //   throw new exceptionType(error.message);
+      // } else {
+      //   throw new InternalServerErrorException('An unexpected error occurred.');
+      // }
+    }
+  }
+
+  /**
+   * DELETE USER ACCOUNT
+   * @param context
+   */
+  @Mutation(() => Boolean)
+  async resetPassword(
+    @Context() context: any,
+    @Args('input') resetPasswordInput: ResetPasswordInput,
+  ) {
+    try {
+      return await this.usersService.resetPassword(resetPasswordInput);
+    } catch (error) {
+      // const exceptionType = exceptionMap[error.constructor.name];
+      // if (exceptionType) {
+      //   throw new exceptionType(error.message);
+      // } else {
+      //   throw new InternalServerErrorException('An unexpected error occurred.');
+      // }
+    }
+  }
+
+  /**
+   * DELETE USER ACCOUNT
+   * @param context
+   */
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Context() context: any,
+    @Args('input') forgotPasswordInput: ForgotPasswordInput,
+  ) {
+    try {
+      return await this.usersService.forgotPassword(forgotPasswordInput);
     } catch (error) {
       // const exceptionType = exceptionMap[error.constructor.name];
       // if (exceptionType) {

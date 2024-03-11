@@ -20,6 +20,8 @@ import { USER_ACCOUNT_STATUS } from './enum/accountStatus.enum';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { USER_ROLES } from './enum/role.enum';
 import { UpdateStoreInput } from './dto/inputs/update-store.input';
+import { ResetPasswordInput } from './dto/inputs/reset-password.input';
+import { ForgotPasswordInput } from './dto/inputs/forgot-password.input';
 
 @Injectable() // we can use this othjer places
 export class UsersService {
@@ -164,7 +166,26 @@ export class UsersService {
         role: { $ne: USER_ROLES.SUPER_ADMIN },
       });
 
-      return result?._id ? true : false;
+      return !!result?._id;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async resetPassword(input: ResetPasswordInput): Promise<boolean> {
+    try {
+      console.log(input);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async forgotPassword(input: ForgotPasswordInput): Promise<boolean> {
+    // return true or false trigger the email or otp here tor reset 
+    try {
+      console.log(input);
+      return true;
     } catch (e) {
       return false;
     }
