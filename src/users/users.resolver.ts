@@ -102,7 +102,7 @@ export class UsersResolver {
    */
 
   @Mutation(() => UserWithTokenResponse)
-  async updateAdmin(
+  async updateUser(
     @Args('input') updateAdminInput: UpdateUserInput,
     @Context() context: any,
   ) {
@@ -131,7 +131,7 @@ export class UsersResolver {
    * @param context
    */
   @Mutation(() => Boolean)
-  async deleteAdmin(
+  async deleteUser(
     @Context() context: any,
     @Args('input') userEmail: DeleteUserAccount,
   ) {
