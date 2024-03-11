@@ -182,7 +182,7 @@ export class UsersService {
   }
 
   async forgotPassword(input: ForgotPasswordInput): Promise<boolean> {
-    // return true or false trigger the email or otp here tor reset 
+    // return true or false trigger the email or otp here tor reset
     try {
       console.log(input);
       return true;
@@ -205,6 +205,15 @@ export class UsersService {
       );
     }
     return userExist;
+  }
+
+  /**
+   *
+   * @returns users list
+   */
+  async getUsers(): Promise<UserResponse[]> {
+    const users = await this.authModel.find({});
+    return users;
   }
 
   ///////////////////////////////////////////////////////////

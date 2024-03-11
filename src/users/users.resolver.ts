@@ -1,5 +1,5 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Store, UserWithTokenResponse } from './dto/users.dto';
+import { Store, UserResponse, UserWithTokenResponse } from './dto/users.dto';
 import { UsersService } from './users.service';
 import { CreateStoreInput } from './dto/inputs/create-store.input';
 import { CreateUserInput } from './dto/inputs/create-user.input';
@@ -196,6 +196,16 @@ export class UsersResolver {
       //   throw new InternalServerErrorException('An unexpected error occurred.');
       // }
     }
+  }
+
+  /**
+   * GET ALL USERS
+   * @returns
+   */
+
+  @Query(() => [UserResponse])
+  async getUsers(): Promise<UserResponse[]> {
+    return this.usersService.getUsers();
   }
 
   /**
