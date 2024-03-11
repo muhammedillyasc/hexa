@@ -9,7 +9,7 @@ export class Store {
   country: string;
 
   @Field()
-  storeCode: number;
+  storeCode: string;
 }
 
 @ObjectType()

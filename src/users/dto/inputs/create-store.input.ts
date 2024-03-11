@@ -5,7 +5,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateStoreInput {
   @Field()
   @IsNotEmpty()
-  storeCode: number;
+  storeCode: string;
 
   @Field()
   @IsNotEmpty()

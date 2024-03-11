@@ -185,13 +185,23 @@ export class UsersService {
     return userExist;
   }
 
-  /////store
+  ///////////////////////////////////////////////////////////
+  //STORE
 
+  /**
+   *
+   * @returns store list
+   */
   async getStores(): Promise<Store[]> {
     const stores = await this.storeModel.find({});
     return stores;
   }
 
+  /**
+   *
+   * @param createStoreData
+   * @returns
+   */
   async createStore(createStoreData: CreateStoreInput): Promise<Store> {
     const storeExist = await this.storeModel.findOne({
       storeCode: createStoreData.storeCode,
@@ -208,5 +218,14 @@ export class UsersService {
     const store: Store = data;
     const newStore = await this.storeModel.create({ ...store });
     return newStore.toJSON();
+  }
+
+  async deleteStore(storeCode: string): Promise<boolean> {
+    try {
+      const result = await this.storeModel.deleteOne({ storeCode });
+      return !!result?.acknowledged;
+    } catch (e) {
+      return false;
+    }
   }
 }

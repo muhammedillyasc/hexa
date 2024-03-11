@@ -13,6 +13,7 @@ import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { USER_ROLES } from './enum/role.enum';
 import { AuthGuard } from './guard/auth.guard';
 import { DeleteUserAccount } from './dto/inputs/delete-user.input';
+import { DeleteStoreInput } from './dto/inputs/delete-store.input';
 
 //will return Pesrson
 @Resolver()
@@ -152,15 +153,39 @@ export class UsersResolver {
     }
   }
 
+  /**
+   * GET ALL STORES
+   * @returns
+   */
+
   @Query(() => [Store])
   async getStores(): Promise<Store[]> {
     return this.usersService.getStores();
   }
+
+  /**
+   * CREATE STORE
+   * @param createStoreData
+   * @returns
+   */
 
   @Mutation(() => Store)
   async createStore(
     @Args('createStoreData') createStoreData: CreateStoreInput,
   ): Promise<Store> {
     return this.usersService.createStore(createStoreData);
+  }
+
+  /**
+   * DELETE INDIVIDUAL STORE
+   * @param deleteStoreData
+   * @returns
+   */
+  @Mutation(() => Boolean)
+  async deleteStore(
+    @Args('input') deleteStoreData: DeleteStoreInput,
+  ): Promise<any> {
+    const { storeCode } = deleteStoreData || {};
+    return this.usersService.deleteStore(storeCode);
   }
 }
