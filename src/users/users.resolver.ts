@@ -14,6 +14,7 @@ import { USER_ROLES } from './enum/role.enum';
 import { AuthGuard } from './guard/auth.guard';
 import { DeleteUserAccount } from './dto/inputs/delete-user.input';
 import { DeleteStoreInput } from './dto/inputs/delete-store.input';
+import { UpdateStoreInput } from './dto/inputs/update-store.input';
 
 //will return Pesrson
 @Resolver()
@@ -174,6 +175,13 @@ export class UsersResolver {
     @Args('createStoreData') createStoreData: CreateStoreInput,
   ): Promise<Store> {
     return this.usersService.createStore(createStoreData);
+  }
+
+  @Mutation(() => Store)
+  async updateStore(
+    @Args('updateStoreData') updateStoreData: UpdateStoreInput,
+  ): Promise<Store> {
+    return this.usersService.updateStore(updateStoreData);
   }
 
   /**

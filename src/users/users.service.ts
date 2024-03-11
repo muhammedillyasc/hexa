@@ -19,6 +19,7 @@ import { LoginUserInput } from './dto/inputs/login-user.input';
 import { USER_ACCOUNT_STATUS } from './enum/accountStatus.enum';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { USER_ROLES } from './enum/role.enum';
+import { UpdateStoreInput } from './dto/inputs/update-store.input';
 
 @Injectable() // we can use this othjer places
 export class UsersService {
@@ -214,6 +215,30 @@ export class UsersService {
       _id: uuid(),
       country: createStoreData?.country,
       storeCode: createStoreData?.storeCode,
+    };
+    const store: Store = data;
+    const newStore = await this.storeModel.create({ ...store });
+    return newStore.toJSON();
+  }
+
+  /**
+   *
+   * @param createStoreData
+   * @returns
+   */
+  async updateStore(updateStoreData: UpdateStoreInput): Promise<Store> {
+    // need updation
+    const storeExist = await this.storeModel.findOne({
+      storeCode: updateStoreData.storeCode,
+    });
+
+    if (storeExist) {
+      return;
+    }
+    const data = {
+      _id: uuid(),
+      country: updateStoreData?.country,
+      storeCode: updateStoreData?.storeCode,
     };
     const store: Store = data;
     const newStore = await this.storeModel.create({ ...store });
